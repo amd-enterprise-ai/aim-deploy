@@ -135,7 +135,7 @@ command: ["bash","-c","pip install huggingface_hub[cli] && hf download --local-d
 ### Serving Runtime
 ```yaml
 # servingruntime-aim-llama-3.1-8b.yaml
-image: amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.8.4
+image: amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.8.5
 ```
 - Provides AIM engine with model and profile selection.
 

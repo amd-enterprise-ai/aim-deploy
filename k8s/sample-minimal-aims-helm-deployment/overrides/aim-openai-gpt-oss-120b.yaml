@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 
-image: amdenterpriseai/aim-qwen-qwen3-32b:0.8.5
-model: Qwen/Qwen3-32B
+image: amdenterpriseai/aim-openai-gpt-oss-120b:0.9.0
+model: openai/gpt-oss-120b
 gpus: 1
 
