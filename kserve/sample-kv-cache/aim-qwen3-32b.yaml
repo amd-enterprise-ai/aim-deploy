@@ -1,0 +1,26 @@
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: aim-qwen3-32b-kv
+  annotations:
+    serving.kserve.io/deploymentMode: RawDeployment
+spec:
+  predictor:
+    model:
+      runtime: aim-qwen3-32b-kv-runtime
+      modelFormat:
+        name: aim-qwen3-32b
+      env:
+      - name: PYTHONHASHSEED
+        value: "0"
+      - name: AIM_ENGINE_ARGS
+        value: '{"kv-transfer-config": {"kv_connector":"LMCacheConnectorV1", "kv_role":"kv_both"}}'
+      resources:
+        limits:
+          memory: "128Gi"
+          cpu: "8"
+          amd.com/gpu: "1"
+        requests:
+          memory: "64Gi"
+          cpu: "4"
+          amd.com/gpu: "1"

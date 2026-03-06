@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minimal-aim-deployment
+  labels:
+    app: minimal-aim-deployment
+spec:
+  progressDeadlineSeconds: 3600
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minimal-aim-deployment
+  template:
+    metadata:
+      labels:
+        app: minimal-aim-deployment
+    spec:
+      containers:
+        - name: minimal-aim-deployment
+          image: "amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.8.4"
+          imagePullPolicy: Always
+          env:
+            - name: AIM_PRECISION
+              value: "auto"
+            - name: AIM_GPU_COUNT
+              value: "1"
+            - name: AIM_GPU_MODEL
+              value: "auto"
+            - name: AIM_ENGINE
+              value: "vllm"
+            - name: AIM_METRIC
+              value: "latency"
+            - name: AIM_LOG_LEVEL_ROOT
+              value: "INFO"
+            - name: AIM_LOG_LEVEL
+              value: "INFO"
+            - name: AIM_PORT
+              value: "8000"
+            - name: HF_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: hf-token
+                  key: hf-token
+          ports:
+            - name: http
+              containerPort: 8000
+          resources:
+            requests:
+              memory: "16Gi"
+              cpu: "4"
+              amd.com/gpu: "1"
+            limits:
+              memory: "16Gi"
+              cpu: "4"
+              amd.com/gpu: "1"
+          startupProbe:
+            httpGet:
+              path: /v1/models
+              port: http
+            periodSeconds: 10
+            failureThreshold: 60
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /v1/models
+              port: http
+          volumeMounts:
+            - name: ephemeral-storage
+              mountPath: /tmp
+            - name: dshm
+              mountPath: /dev/shm
+      volumes:
+        - name: ephemeral-storage
+          emptyDir:
+            sizeLimit: 256Gi
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 32Gi

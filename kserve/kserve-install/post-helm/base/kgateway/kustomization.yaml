@@ -1,0 +1,3 @@
+resources:
+- gateway-config.yaml
+- kserve-gateway.yaml

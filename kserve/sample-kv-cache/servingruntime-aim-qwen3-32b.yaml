@@ -1,0 +1,49 @@
+apiVersion: serving.kserve.io/v1alpha1
+kind: ClusterServingRuntime
+metadata:
+  name: aim-qwen3-32b-kv-runtime
+spec:
+  supportedModelFormats:
+  - name: aim-qwen3-32b
+  containers:
+  - name: kserve-container
+    image: amdenterpriseai/aim-qwen-qwen3-32b:0.8.4
+    imagePullPolicy: Always
+    command:
+    - /bin/bash
+    - -c
+    - |
+      git clone --branch v0.3.5 https://github.com/LMCache/LMCache.git
+      cd LMCache
+      pip install -r requirements/build.txt
+      python3 -m pip install --no-build-isolation -e .
+      cd /workspace
+      exec ./entrypoint.py
+    ports:
+    - name: http
+      containerPort: 8000
+      protocol: TCP
+    volumeMounts:
+    - mountPath: /dev/shm
+      name: dshm
+    - name: lmcache-config-volume
+      mountPath: /lmcache
+      readOnly: true
+    env:
+    - name: LMCACHE_USE_EXPERIMENTAL
+      value: "True"
+    - name: LMCACHE_CONFIG_FILE
+      value: /lmcache/lmcache_config.yaml
+    - name: LMCACHE_LOG_LEVEL
+      value: "INFO"
+  volumes:
+  - name: dshm
+    emptyDir:
+      medium: Memory
+      sizeLimit: 8Gi
+  - name: lmcache-config-volume
+    configMap:
+      name: lmcache-config
+      items:
+      - key: lmcache_config.yaml
+        path: lmcache_config.yaml

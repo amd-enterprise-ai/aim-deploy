@@ -1,0 +1,110 @@
+apiVersion: opentelemetry.io/v1beta1
+kind: OpenTelemetryCollector
+metadata:
+  name: kgateway-metrics
+  namespace: otel-lgtm-stack
+spec:
+  mode: deployment
+  image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.113.0
+  serviceAccount: kgateway-collector
+
+  config:
+    receivers:
+      # Data plane receiver - scrapes Envoy proxy metrics from kserve-gateway pods
+      prometheus/kgateway-dataplane:
+        config:
+          scrape_configs:
+          - job_name: kgateway-gateways
+            kubernetes_sd_configs:
+            - role: pod
+              namespaces:
+                names: [ "kgateway-system" ]
+            relabel_configs:
+            # Keep only pods with kgateway=kube-gateway label (data plane pods)
+            - action: keep
+              regex: kube-gateway
+              source_labels: [ __meta_kubernetes_pod_label_kgateway ]
+            # Keep only pods with prometheus scrape annotation
+            - source_labels: [ __meta_kubernetes_pod_annotation_prometheus_io_scrape ]
+              action: keep
+              regex: true
+            # Build the scrape address from pod IP and port annotation
+            - action: replace
+              source_labels: [ __meta_kubernetes_pod_ip, __meta_kubernetes_pod_annotation_prometheus_io_port ]
+              separator: ':'
+              target_label: __address__
+
+      # Control plane receiver - scrapes controller metrics from kgateway pods  
+      prometheus/kgateway-controlplane:
+        config:
+          scrape_configs:
+          - job_name: kgateway-controlplane
+            kubernetes_sd_configs:
+            - role: pod
+              namespaces:
+                names: [ "kgateway-system" ]
+            relabel_configs:
+            # Keep only pods with kgateway=kgateway label (control plane pods)
+            - action: keep
+              regex: kgateway
+              source_labels: [ __meta_kubernetes_pod_label_kgateway ]
+            # Keep only pods with prometheus scrape annotation
+            - source_labels: [ __meta_kubernetes_pod_annotation_prometheus_io_scrape ]
+              action: keep
+              regex: true
+            # Build the scrape address from pod IP and port annotation
+            - action: replace
+              source_labels: [ __meta_kubernetes_pod_ip, __meta_kubernetes_pod_annotation_prometheus_io_port ]
+              separator: ':'
+              target_label: __address__
+
+    processors:
+      # Add basic resource attributes
+      resource:
+        attributes:
+        - key: service.name
+          value: kgateway-monitoring
+          action: upsert
+
+    exporters:
+      # Export to the same LGTM stack as vllm metrics
+      otlphttp:
+        endpoint: "http://lgtm-stack.otel-lgtm-stack.svc:4318"
+
+    service:
+      pipelines:
+        metrics:
+          receivers: [ prometheus/kgateway-dataplane, prometheus/kgateway-controlplane ]
+          processors: [ resource ]
+          exporters: [ otlphttp ]
+---
+# ServiceAccount for the collector to access Kubernetes API
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kgateway-collector
+  namespace: otel-lgtm-stack
+---
+# ClusterRole with permissions to discover pods
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kgateway-collector
+rules:
+- apiGroups: [ "" ]
+  resources: [ "pods" ]
+  verbs: [ "get", "list", "watch" ]
+---
+# ClusterRoleBinding to grant permissions
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kgateway-collector
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kgateway-collector
+subjects:
+- kind: ServiceAccount
+  name: kgateway-collector
+  namespace: otel-lgtm-stack

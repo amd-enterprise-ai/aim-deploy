@@ -1,0 +1,29 @@
+apiVersion: serving.kserve.io/v1alpha1
+kind: ClusterServingRuntime
+metadata:
+  name: vllm-rocm-runtime
+spec:
+  supportedModelFormats:
+    - name: huggingface
+  multiModel: false
+  containers:
+    - name: kserve-container
+      image: rocm/vllm
+      command:
+        - python
+        - -m
+        - vllm.entrypoints.openai.api_server
+      args:
+        - "--port=8000"
+        - "--host=0.0.0.0"
+      env:
+        - name: VLLM_WORKER_MULTIPROC_METHOD
+          value: "spawn"
+      ports:
+        - containerPort: 8000
+          name: http
+      resources:
+        limits:
+          amd.com/gpu: "1"
+          cpu: "8"
+          memory: 32Gi

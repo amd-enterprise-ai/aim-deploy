@@ -1,0 +1,21 @@
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: aim-qwen3-32b
+  annotations:
+    serving.kserve.io/deploymentMode: RawDeployment
+spec:
+  predictor:
+    model:
+      runtime: aim-qwen3-32b-runtime
+      modelFormat:
+        name: aim-qwen3-32b
+      resources:
+        limits:
+          memory: "128Gi"
+          cpu: "8"
+          amd.com/gpu: "1"
+        requests:
+          memory: "64Gi"
+          cpu: "4"
+          amd.com/gpu: "1"

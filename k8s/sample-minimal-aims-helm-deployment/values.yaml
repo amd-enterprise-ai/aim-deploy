@@ -1,0 +1,61 @@
+# Default values for sample-minimal-aims-helm-deployment.
+# This is a YAML-formatted file.
+# Declare variables to be substituted into your templates.
+
+replicaCount: 1
+
+image: amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.8.4
+imagePullPolicy: Always
+
+nameOverride: ""
+fullnameOverride: ""
+
+# Model configuration (optional, can be overridden)
+model: ""
+
+# GPU configuration
+gpus: 1
+
+# AIM configuration
+aim:
+  precision: "auto"
+  gpuCount: "1"
+  gpuModel: "auto"
+  engine: "vllm"
+  metric: "latency"
+  logLevelRoot: "INFO"
+  logLevel: "INFO"
+
+# Additional environment variables
+env_vars:
+  HF_TOKEN:
+    name: hf-token
+    key: hf-token
+
+service:
+  type: ClusterIP
+  port: 8000
+
+# Resource limits and requests
+resources:
+  requests:
+    memory: "16Gi"
+    cpu: "4"
+    amd.com/gpu: "1"
+  limits:
+    memory: "16Gi"
+    cpu: "4"
+    amd.com/gpu: "1"
+
+# Probe configuration
+probes:
+  startup:
+    periodSeconds: 10
+    failureThreshold: 60
+
+# Volume configuration
+volumes:
+  ephemeralStorage:
+    sizeLimit: 256Gi
+  dshm:
+    sizeLimit: 32Gi

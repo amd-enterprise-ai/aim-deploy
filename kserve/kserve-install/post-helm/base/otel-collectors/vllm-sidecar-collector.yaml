@@ -1,0 +1,60 @@
+apiVersion: opentelemetry.io/v1beta1
+kind: OpenTelemetryCollector
+metadata:
+  name: vllm-sidecar-collector
+  namespace: otel-lgtm-stack
+spec:
+  mode: sidecar
+  image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.113.0
+  env:
+  - name: SERVICE_NAME
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.labels['app']
+  config:
+    receivers:
+      prometheus:
+        config:
+          scrape_configs:
+          - job_name: 'vllm'
+            metrics_path: /metrics
+            static_configs:
+            - targets: [ 'localhost:8000' ]
+      otlp:
+        protocols:
+          grpc: {}
+          http: {}
+
+    processors:
+      resource:
+        attributes:
+        - key: service.name
+          value: ${env:SERVICE_NAME}
+          action: upsert
+
+      transform:
+        metric_statements:
+        - context: datapoint
+          statements:
+          - set(attributes["service"], resource.attributes["service.name"])
+
+    exporters:
+      otlphttp:
+        endpoint: "http://lgtm-stack.otel-lgtm-stack.svc:4318"
+
+    service:
+      pipelines:
+        metrics:
+          receivers: [ prometheus ]
+          processors: [ resource, transform ]
+          exporters: [ otlphttp ]
+
+        traces:
+          receivers: [ otlp ]
+          processors: [ resource ]
+          exporters: [ otlphttp ]
+
+        logs:
+          receivers: [ otlp ]
+          processors: [ resource ]
+          exporters: [ otlphttp ]

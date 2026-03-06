@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: model-downloader-meta-llama-3-1--8b
+spec:
+  template:
+    spec:
+      containers:
+      - name: hf-model-downloader
+        image: python
+        env:
+        - name: HF_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: hf-token
+              key: HF_TOKEN
+        volumeMounts:
+        - mountPath: "/pv"
+          name: model-store
+        command: [ "bash", "-c", "pip install huggingface_hub[cli] && hf download --local-dir /pv/amd/Llama-3.1-8B-Instruct-FP8-KV amd/Llama-3.1-8B-Instruct-FP8-KV" ]
+      restartPolicy: Never
+      volumes:
+      - name: model-store
+        persistentVolumeClaim:
+          claimName: model-store-pvc
+  backoffLimit: 4

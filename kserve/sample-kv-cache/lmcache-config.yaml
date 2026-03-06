@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: lmcache-config
+data:
+  lmcache_config.yaml: |
+    local_cpu: true  # Enable local CPU RAM cache for fast access (Recommended)
+    chunk_size: 50  # Size of cache chunks (tune for your model)
+    max_local_cpu_size: 1.0  # Max size (GB) for local CPU cache
+    remote_url: "redis://redis.default.svc.cluster.local:6379"  # Redis as remote backend
+    remote_serde: "naive"  # Serialization method for remote cache. Supported values: "naive", "cachegen"

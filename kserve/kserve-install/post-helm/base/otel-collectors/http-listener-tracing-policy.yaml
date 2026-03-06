@@ -1,0 +1,25 @@
+apiVersion: gateway.kgateway.dev/v1alpha1
+kind: HTTPListenerPolicy
+metadata:
+  name: tracing-policy
+  namespace: kgateway-system
+spec:
+  targetRefs:
+  - group: gateway.networking.k8s.io
+    kind: Gateway
+    name: kserve-gateway
+  tracing:
+    provider:
+      openTelemetry:
+        serviceName: kgateway-http
+        grpcService:
+          backendRef:
+            name: opentelemetry-collector-traces
+            namespace: otel-lgtm-stack
+            port: 4317
+    attributes:
+    - name: api.key
+      requestHeader:
+        name: Authorization
+        defaultValue: "anonymous"
+    spawnUpstreamSpan: true

@@ -1,0 +1,23 @@
+apiVersion: serving.kserve.io/v1alpha1
+kind: ClusterServingRuntime
+metadata:
+  name: aim-qwen3-32b-runtime
+spec:
+  supportedModelFormats:
+  - name: aim-qwen3-32b
+  containers:
+  - name: kserve-container
+    image: amdenterpriseai/aim-qwen-qwen3-32b:0.8.4
+    imagePullPolicy: Always
+    ports:
+    - name: http
+      containerPort: 8000
+      protocol: TCP
+    volumeMounts:
+    - mountPath: /dev/shm
+      name: dshm
+  volumes:
+  - name: dshm
+    emptyDir:
+      medium: Memory
+      sizeLimit: 8Gi

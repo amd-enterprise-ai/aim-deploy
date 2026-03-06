@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "sample-minimal-aims-helm-deployment.fullname" . }}
+  labels:
+    {{- include "sample-minimal-aims-helm-deployment.labels" . | nindent 4 }}
+spec:
+  progressDeadlineSeconds: 3600
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "sample-minimal-aims-helm-deployment.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "sample-minimal-aims-helm-deployment.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.image }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          env:
+            - name: AIM_PRECISION
+              value: {{ .Values.aim.precision | quote }}
+            - name: AIM_GPU_COUNT
+              value: {{ .Values.aim.gpuCount | quote }}
+            - name: AIM_GPU_MODEL
+              value: {{ .Values.aim.gpuModel | quote }}
+            - name: AIM_ENGINE
+              value: {{ .Values.aim.engine | quote }}
+            - name: AIM_METRIC
+              value: {{ .Values.aim.metric | quote }}
+            - name: AIM_LOG_LEVEL_ROOT
+              value: {{ .Values.aim.logLevelRoot | quote }}
+            - name: AIM_LOG_LEVEL
+              value: {{ .Values.aim.logLevel | quote }}
+            - name: AIM_PORT
+              value: {{ .Values.service.port | quote }}
+            {{- if .Values.model }}
+            - name: AIM_MODEL
+              value: {{ .Values.model | quote }}
+            {{- end }}
+            {{- range $key, $value := .Values.env_vars }}
+            - name: {{ $key }}
+              {{- if $value.name }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $value.name }}
+                  key: {{ $value.key }}
+              {{- else }}
+              value: {{ $value | quote }}
+              {{- end }}
+            {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          startupProbe:
+            httpGet:
+              path: /v1/models
+              port: http
+            periodSeconds: {{ .Values.probes.startup.periodSeconds }}
+            failureThreshold: {{ .Values.probes.startup.failureThreshold }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /v1/models
+              port: http
+          volumeMounts:
+            - name: ephemeral-storage
+              mountPath: /tmp
+            - name: dshm
+              mountPath: /dev/shm
+      volumes:
+        - name: ephemeral-storage
+          emptyDir:
+            sizeLimit: {{ .Values.volumes.ephemeralStorage.sizeLimit }}
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: {{ .Values.volumes.dshm.sizeLimit }}
+

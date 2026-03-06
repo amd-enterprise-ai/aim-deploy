@@ -1,0 +1,14 @@
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: allow-kgateway-tracing-access
+  namespace: otel-lgtm-stack
+spec:
+  from:
+  - group: gateway.kgateway.dev
+    kind: HTTPListenerPolicy
+    namespace: kgateway-system
+  to:
+  - group: ""
+    kind: Service
+    name: opentelemetry-collector-traces

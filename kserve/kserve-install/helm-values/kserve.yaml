@@ -1,0 +1,6 @@
+# Values for KServe chart
+kserve:
+  controller:
+    deploymentMode: RawDeployment
+  localmodel:
+    enabled: false

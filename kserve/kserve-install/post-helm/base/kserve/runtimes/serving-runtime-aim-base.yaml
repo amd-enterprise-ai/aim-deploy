@@ -1,0 +1,26 @@
+apiVersion: serving.kserve.io/v1alpha1
+kind: ClusterServingRuntime
+metadata:
+  name: aim-base-model-runtime
+spec:
+  supportedModelFormats:
+    - name: aim-model-vllm
+  containers:
+    - name: kserve-container
+      image: amdenterpriseai/aim-base:0.8
+      imagePullPolicy: Always
+      ports:
+        - name: http
+          containerPort: 8000
+          protocol: TCP
+      env:
+        - name: VLLM_ENABLE_METRICS
+          value: "true"
+      volumeMounts:
+       - mountPath: /dev/shm
+         name: dshm
+  volumes:
+    - name: dshm
+      emptyDir:
+        medium: Memory
+        sizeLimit: 8Gi

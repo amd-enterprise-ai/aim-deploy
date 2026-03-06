@@ -1,0 +1,44 @@
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: aim-llama-3-1-8b-instruct
+  annotations:
+    serving.kserve.io/deploymentMode: RawDeployment
+    serving.kserve.io/autoscalerClass: "keda"
+    sidecar.opentelemetry.io/inject: "otel-lgtm-stack/vllm-sidecar-collector"
+spec:
+  predictor:
+    model:
+      runtime: aim-llama-3-1-8b-instruct-runtime
+      modelFormat:
+        name: aim-llama-3-1-8b-instruct
+      storageUri: 'pvc://model-store-pvc/'
+      env:
+      - name: AIM_CACHE_PATH
+        value: /mnt/models/
+      - name: AIM_ENGINE_ARGS
+        value: '{"otlp-traces-endpoint": "http://lgtm-stack.otel-lgtm-stack.svc:4317", "collect-detailed-traces": "all", "async-scheduling": false, "max-num-batched-tokens": 32768}'
+      - name: OTEL_SERVICE_NAME
+        value: "aim-llama-3-1-8b-instruct"
+      resources:
+        limits:
+          memory: "200Gi"
+          cpu: "2"
+          amd.com/gpu: "1"
+        requests:
+          memory: "100Gi"
+          cpu: "2"
+          amd.com/gpu: "1"
+    minReplicas: 1
+    maxReplicas: 3
+    autoScaling:
+      metrics:
+      - type: External
+        external:
+          metric:
+            backend: "prometheus"
+            serverAddress: "http://lgtm-stack.otel-lgtm-stack.svc:9090"
+            query: 'sum(vllm:num_requests_running{service="isvc.aim-llama-3-1-8b-instruct-predictor"})'
+          target:
+            type: Value
+            value: "1"

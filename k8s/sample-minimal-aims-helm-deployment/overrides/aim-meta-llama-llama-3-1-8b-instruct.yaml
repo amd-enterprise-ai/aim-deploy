@@ -1,0 +1,12 @@
+# Copyright © Advanced Micro Devices, Inc., or its affiliates.
+#
+# SPDX-License-Identifier: MIT
+
+image: amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.8.4
+model: meta-llama/Llama-3.1-8B-Instruct
+gpus: 1
+
+env_vars:
+  HF_TOKEN:
+    key: hf-token
+    name: hf-token

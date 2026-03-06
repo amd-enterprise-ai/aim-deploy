@@ -1,0 +1,8 @@
+# Values for AMD GPU Operator
+upgradeCRD: false
+node-feature-discovery:
+  enabled: false
+crds:
+  defaultCR:
+    install: false
+
