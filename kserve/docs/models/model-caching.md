@@ -9,11 +9,11 @@ PVC-based model caching provides persistent, shared storage for models in KServe
 AIM supports two model cache formats within `AIM_CACHE_PATH`:
 
 1. **Local Directory Format (recommended for PVC)**: Models stored as `AIM_CACHE_PATH/org/model/` (e.g., `/mnt/models/meta-llama/Llama-3.1-8B-Instruct`)
-2. **HuggingFace Hub Cache**: Models cached in `AIM_CACHE_PATH/hub/` using HuggingFace's standard cache format
+2. **Hugging Face Hub Cache**: Models cached in `AIM_CACHE_PATH/hub/` using Hugging Face's standard cache format
 
 **Cache Resolution Order:**
 1. **Local directory first**: If a model exists at `AIM_CACHE_PATH/org/model/`, it's loaded directly
-2. **HuggingFace fallback**: Otherwise, the `model_id` is used and HuggingFace handles cache lookup or download
+2. **Hugging Face fallback**: Otherwise, the `model_id` is used and Hugging Face handles cache lookup or download
 
 > **_NOTE:_** "KServe Integration"
     In KServe deployments, cached models are automatically mounted to `/mnt/models/` by KServe. AIM's `AIM_CACHE_PATH` environment variable should be set to `/mnt/models/` to utilize this mounted cache directory.

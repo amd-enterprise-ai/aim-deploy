@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: minimal-aim-deployment
+  name: minimal-aim-app
   labels:
-    app: minimal-aim-deployment
+    app: minimal-aim-app
 spec:
   progressDeadlineSeconds: 3600
   replicas: 1
   selector:
     matchLabels:
-      app: minimal-aim-deployment
+      app: minimal-aim-app
   template:
     metadata:
       labels:
-        app: minimal-aim-deployment
+        app: minimal-aim-app
     spec:
       containers:
-        - name: minimal-aim-deployment
-          image: "amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.8.5"
+        - name: aim-container
+          image: "amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.10.0"
           imagePullPolicy: Always
           env:
             - name: AIM_PRECISION

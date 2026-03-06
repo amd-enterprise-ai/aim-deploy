@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 
-image: amdenterpriseai/aim-qwen-qwen3-235b-a22b:0.10.0
-model: Qwen/Qwen3-235B-A22B
-gpus: 2
+image: amdenterpriseai/aim-deepseek-ai-deepseek-r1:0.10.0
+model: deepseek-ai/DeepSeek-R1
+gpus: 8
 

@@ -13,13 +13,14 @@ sample-minimal-aims-deployment/
 
 ## Deployment
 
-### 1. Create secret
+### 1. (Optional) Create secret
 
-AIM uses DockerHub container registry to host its images. The images are public and no authentication is required to pull.
-However, some models are gated and require authentication to download them from Hugging Face. Therefore, you need to
-create a Kubernetes secret.
+**Note:** Only required if deploying gated models that need Hugging Face authentication.
 
-Create secret for Hugging Face token to download models:
+AIM uses Docker Hub container registry to host its images. The images are public and no authentication is required to pull.
+However, some models are gated and require authentication to download them from Hugging Face.
+
+If using a gated model, create a Kubernetes secret for Hugging Face token to download models:
 
 ```bash
 kubectl create secret generic hf-token \
@@ -54,27 +55,26 @@ daemonset.apps/amdgpu-device-plugin-daemonset created
 Here is an example of `deployment.yaml` for deploying AIM with a specific model. See a corresponding `service.yaml` below.
 
 ```yaml
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: minimal-aim-deployment
+  name: minimal-aim-app
   labels:
-    app: minimal-aim-deployment
+    app: minimal-aim-app
 spec:
   progressDeadlineSeconds: 3600
   replicas: 1
   selector:
     matchLabels:
-      app: minimal-aim-deployment
+      app: minimal-aim-app
   template:
     metadata:
       labels:
-        app: minimal-aim-deployment
+        app: minimal-aim-app
     spec:
       containers:
-        - name: minimal-aim-deployment
-          image: "amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.8.5"
+        - name: aim-container
+          image: "amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.10.0"
           imagePullPolicy: Always
           env:
             - name: AIM_PRECISION
@@ -145,9 +145,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: minimal-aim-deployment
+  name: minimal-aim-app
   labels:
-    app: minimal-aim-deployment
+    app: minimal-aim-app
 spec:
   type: ClusterIP
   ports:
@@ -155,8 +155,31 @@ spec:
       port: 80
       targetPort: 8000
   selector:
-    app: minimal-aim-deployment
+    app: minimal-aim-app
 ```
+
+#### Naming convention in the examples
+
+The files that define the deployment and service contain a bunch of names for different entities. The table below
+explains what each name represents in `deployment.yaml`.
+
+| Field                                   | Value           | Purpose                                                      |
+|-----------------------------------------|-----------------|--------------------------------------------------------------|
+| `metadata.name`                         | minimal-aim-app | The deployment's name in the cluster                         |
+| `metadata.labels.app`                   | minimal-aim-app | The deployment's label for organizing and selecting purposes |
+| `spec.selector.matchLabels.app`         | minimal-aim-app | Label selector to find pods                                  |
+| `spec.template.metadata.labels.app`     | minimal-aim-app | Pod label for identification                                 |
+| `spec.template.spec.containers[0].name` | aim-container   | Container name within the pod                                |
+
+Fields `spec.selector.matchLabels.app` and `spec.template.metadata.labels.app` must match. 
+
+| Field               | Value            | Purpose                                                  |
+|---------------------|------------------|----------------------------------------------------------|
+| metadata.name       | minimal-aim-app  | The service's name in the cluster                        |
+| metadata.labels.app | minimal-aim-app  | The resource label for organizing and selecting purposes |
+| spec.selector.app   | minimal-aim-app  | Label selector to find pods                              |
+
+Field `spec.selector.app` must match deployment's `spec.selector.matchLabels.app` .
 
 #### Deployment
 
@@ -169,8 +192,8 @@ kubectl apply -f . -n YOUR_K8S_NAMESPACE
 Expected output:
 
 ```
-deployment.apps/minimal-aim-deployment created
-service/minimal-aim-deployment created
+deployment.apps/minimal-aim-app created
+service/minimal-aim-app created
 ```
 
 ## Testing
@@ -180,7 +203,7 @@ service/minimal-aim-deployment created
 Do port forwarding
 
 ```bash
-kubectl port-forward service/minimal-aim-deployment 8000:80 -n YOUR_K8S_NAMESPACE
+kubectl port-forward service/minimal-aim-app 8000:80 -n YOUR_K8S_NAMESPACE
 ```
 
 Expected output:
@@ -244,6 +267,6 @@ kubectl delete -f . -n YOUR_K8S_NAMESPACE
 Expected output:
 
 ```
-deployment.apps "minimal-aim-deployment" deleted
-service "minimal-aim-deployment" deleted
+deployment.apps "minimal-aim-app" deleted
+service "minimal-aim-app" deleted
 ```

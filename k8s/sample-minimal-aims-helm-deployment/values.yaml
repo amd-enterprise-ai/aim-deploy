@@ -4,7 +4,7 @@
 
 replicaCount: 1
 
-image: amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.8.5
+image: amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.10.0
 imagePullPolicy: Always
 
 nameOverride: ""
@@ -27,14 +27,11 @@ aim:
   logLevel: "INFO"
 
 # Additional environment variables
-env_vars:
-  HF_TOKEN:
-    name: hf-token
-    key: hf-token
+env_vars: {}
 
 service:
   type: ClusterIP
-  port: 8000
+  port: 80
 
 # Resource limits and requests
 resources:

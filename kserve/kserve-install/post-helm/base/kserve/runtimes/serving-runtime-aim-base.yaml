@@ -7,7 +7,7 @@ spec:
     - name: aim-model-vllm
   containers:
     - name: kserve-container
-      image: amdenterpriseai/aim-base:0.9
+      image: amdenterpriseai/aim-base:0.10
       imagePullPolicy: Always
       ports:
         - name: http

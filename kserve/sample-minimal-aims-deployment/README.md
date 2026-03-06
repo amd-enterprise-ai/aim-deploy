@@ -62,7 +62,7 @@ curl -X POST http://localhost:8000/v1/completions \
 ### Serving Runtime
 ```yaml
 # servingruntime-aim-qwen3-32b.yaml
-image: amdenterpriseai/aim-qwen-qwen3-32b:0.8.5
+image: amdenterpriseai/aim-qwen-qwen3-32b:0.10.0
 ```
 - Contains AIM engine with pre-built Qwen3 32B model
 

@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 
-image: amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.8.5
+image: amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.10.0
 model: meta-llama/Llama-3.1-8B-Instruct
 gpus: 1
 

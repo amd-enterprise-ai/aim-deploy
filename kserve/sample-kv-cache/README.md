@@ -84,7 +84,7 @@ First request has 0 hit tokens (cache miss), subsequent request with same prompt
 ### Serving Runtime
 ```yaml
 # servingruntime-aim-qwen3-32b.yaml
-image: amdenterpriseai/aim-qwen-qwen3-32b:0.8.5
+image: amdenterpriseai/aim-qwen-qwen3-32b:0.10.0
 command:
 - /bin/bash
 - -c

@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "sample-minimal-aims-helm-deployment.fullname" . }}
+  name: {{ include "aim.fullname" . }}
   labels:
-    {{- include "sample-minimal-aims-helm-deployment.labels" . | nindent 4 }}
+    {{- include "aim.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -12,5 +12,5 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "sample-minimal-aims-helm-deployment.selectorLabels" . | nindent 4 }}
+    {{- include "aim.selectorLabels" . | nindent 4 }}
 

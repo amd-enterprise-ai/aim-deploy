@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "sample-minimal-aims-helm-deployment.fullname" . }}
+  name: {{ include "aim.fullname" . }}
   labels:
-    {{- include "sample-minimal-aims-helm-deployment.labels" . | nindent 4 }}
+    {{- include "aim.labels" . | nindent 4 }}
 spec:
   progressDeadlineSeconds: 3600
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "sample-minimal-aims-helm-deployment.selectorLabels" . | nindent 6 }}
+      {{- include "aim.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "sample-minimal-aims-helm-deployment.selectorLabels" . | nindent 8 }}
+        {{- include "aim.selectorLabels" . | nindent 8 }}
     spec:
       containers:
         - name: {{ .Chart.Name }}

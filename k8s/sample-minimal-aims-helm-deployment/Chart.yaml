@@ -1,6 +1,6 @@
 apiVersion: v2
-name: sample-minimal-aims-helm-deployment
-description: A Helm chart for AIM deployment
+name: minimal-aim-app
+description: A Helm chart for AIM
 type: application
-version: 0.1.0
-appVersion: 0.1.0
+version: 0.1.1
+appVersion: 0.1.1
