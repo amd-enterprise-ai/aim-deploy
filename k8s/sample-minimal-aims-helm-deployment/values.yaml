@@ -31,7 +31,7 @@ env_vars: {}
 
 service:
   type: ClusterIP
-  port: 80
+  port: 8000
 
 # Resource limits and requests
 resources:

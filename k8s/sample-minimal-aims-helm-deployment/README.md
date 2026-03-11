@@ -125,7 +125,7 @@ flowchart TD
 Do port forwarding
 
 ```bash
-kubectl port-forward service/aim-meta-llama-3-1-8b-minimal-aim-app 8000:80 -n YOUR_K8S_NAMESPACE
+kubectl port-forward service/aim-meta-llama-3-1-8b-minimal-aim-app 8000:8000 -n YOUR_K8S_NAMESPACE
 ```
 
 Expected output:
