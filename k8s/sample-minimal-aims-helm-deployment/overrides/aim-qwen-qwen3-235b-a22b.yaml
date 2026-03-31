@@ -2,7 +2,14 @@
 #
 # SPDX-License-Identifier: MIT
 
-image: amdenterpriseai/aim-qwen-qwen3-235b-a22b:0.10.0
+image: amdenterpriseai/aim-qwen-qwen3-235b-a22b:0.11.0
 model: Qwen/Qwen3-235B-A22B
 gpus: 2
 
+resources:
+  requests:
+    memory: "128Gi"
+    cpu: "4"
+  limits:
+    memory: "128Gi"
+    cpu: "4"

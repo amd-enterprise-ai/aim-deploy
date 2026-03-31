@@ -5,4 +5,5 @@
 image: amdenterpriseai/aim-deepseek-ai-deepseek-v3-1-terminus:0.10.0
 model: deepseek-ai/DeepSeek-V3.1-Terminus
 gpus: 8
-
+memory: "128Gi"
+cpu: 4

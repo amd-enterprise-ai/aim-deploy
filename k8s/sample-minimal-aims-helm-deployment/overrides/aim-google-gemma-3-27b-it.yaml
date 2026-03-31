@@ -2,8 +2,8 @@
 #
 # SPDX-License-Identifier: MIT
 
-image: amdenterpriseai/aim-meta-llama-llama-3-3-70b-instruct:0.11.0
-model: meta-llama/Llama-3.3-70B-Instruct
+image: amdenterpriseai/aim-google-gemma-3-27b-it:0.11.0
+model: google/gemma-3-27b-it
 gpus: 1
 
 env_vars:

@@ -5,4 +5,5 @@
 image: amdenterpriseai/aim-mistralai-mistral-large-3-675b-instruct-2512:0.10.0
 model: mistralai/Mistral-Large-3-675B-Instruct-2512
 gpus: 8
-
+memory: "128Gi"
+cpu: 4

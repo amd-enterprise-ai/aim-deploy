@@ -23,7 +23,7 @@ spec:
             - name: AIM_PRECISION
               value: {{ .Values.aim.precision | quote }}
             - name: AIM_GPU_COUNT
-              value: {{ .Values.aim.gpuCount | quote }}
+              value: {{ .Values.gpus | quote }}
             - name: AIM_GPU_MODEL
               value: {{ .Values.aim.gpuModel | quote }}
             - name: AIM_ENGINE
@@ -55,7 +55,14 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            requests:
+              memory: {{ .Values.memory | quote }}
+              cpu: {{ .Values.cpu | quote }}
+              amd.com/gpu: {{ .Values.gpus | quote }}
+            limits:
+              memory: {{ .Values.memory | quote }}
+              cpu: {{ .Values.cpu | quote }}
+              amd.com/gpu: {{ .Values.gpus | quote }}
           startupProbe:
             httpGet:
               path: /v1/models

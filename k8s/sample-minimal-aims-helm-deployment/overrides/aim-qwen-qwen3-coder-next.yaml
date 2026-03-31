@@ -1,0 +1,7 @@
+# Copyright © Advanced Micro Devices, Inc., or its affiliates.
+#
+# SPDX-License-Identifier: MIT
+
+image: amdenterpriseai/aim-qwen-qwen3-coder-next:0.11.0
+model: Qwen/Qwen3-Coder-Next
+gpus: 1

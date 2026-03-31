@@ -5,4 +5,5 @@
 image: amdenterpriseai/aim-deepseek-ai-deepseek-r1-0528:0.10.0
 model: deepseek-ai/DeepSeek-R1-0528
 gpus: 8
-
+memory: "128Gi"
+cpu: 4

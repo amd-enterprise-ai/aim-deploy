@@ -1,0 +1,7 @@
+# Copyright © Advanced Micro Devices, Inc., or its affiliates.
+#
+# SPDX-License-Identifier: MIT
+
+image: amdenterpriseai/aim-qwen-qwen3-vl-235b-a22b-instruct:0.11.0
+model: Qwen/Qwen3-VL-235B-A22B-Instruct
+gpus: 2

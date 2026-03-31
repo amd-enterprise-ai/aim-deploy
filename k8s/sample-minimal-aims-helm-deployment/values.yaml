@@ -4,7 +4,7 @@
 
 replicaCount: 1
 
-image: amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.10.0
+image: amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.11.0
 imagePullPolicy: Always
 
 nameOverride: ""
@@ -15,11 +15,12 @@ model: ""
 
 # GPU configuration
 gpus: 1
+memory: "16Gi"
+cpu: 4
 
 # AIM configuration
 aim:
   precision: "auto"
-  gpuCount: "1"
   gpuModel: "auto"
   engine: "vllm"
   metric: "latency"
@@ -32,17 +33,6 @@ env_vars: {}
 service:
   type: ClusterIP
   port: 8000
-
-# Resource limits and requests
-resources:
-  requests:
-    memory: "16Gi"
-    cpu: "4"
-    amd.com/gpu: "1"
-  limits:
-    memory: "16Gi"
-    cpu: "4"
-    amd.com/gpu: "1"
 
 # Probe configuration
 probes:
