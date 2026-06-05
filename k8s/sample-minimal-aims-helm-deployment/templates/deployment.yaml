@@ -10,6 +10,10 @@ spec:
   selector:
     matchLabels:
       {{- include "aim.selectorLabels" . | nindent 6 }}
+  {{- if .Values.deploymentStrategy }}
+  strategy:
+    {{- toYaml .Values.deploymentStrategy | nindent 4 }}
+  {{- end }}
   template:
     metadata:
       labels:
@@ -40,9 +44,13 @@ spec:
             - name: AIM_MODEL
               value: {{ .Values.model | quote }}
             {{- end }}
+            {{- if .Values.aim.profile_id }}
+            - name: AIM_PROFILE_ID
+              value: {{ .Values.aim.profile_id | quote }}
+            {{- end }}
             {{- range $key, $value := .Values.env_vars }}
             - name: {{ $key }}
-              {{- if $value.name }}
+              {{- if and (kindIs "map" $value) $value.name }}
               valueFrom:
                 secretKeyRef:
                   name: {{ $value.name }}

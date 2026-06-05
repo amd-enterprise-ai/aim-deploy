@@ -1,0 +1,40 @@
+# Copyright © Advanced Micro Devices, Inc., or its affiliates.
+#
+# SPDX-License-Identifier: MIT, AMD EPYC CONTAINER LICENSE AGREEMENT
+
+image: "docker.io/amdenterpriseai/aim-epyc-meta-llama-llama-3-2-1b-instruct:0.11.0-preview"
+
+model: meta-llama/Llama-3.2-1B-Instruct
+
+gpus: 0
+
+deploymentStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 0
+    maxUnavailable: 1
+
+aim:
+  precision: "auto"
+  gpuCount: "0"
+  gpuModel: "CPU"
+  engine: "vllm"
+  metric: "latency"
+
+# No GPU requests — large memory for CPU model load + KV cache.
+# Use top-level memory/cpu (templates/deployment.yaml uses .Values.memory / .Values.cpu, not resources.*).
+memory: "128Gi"
+cpu: "188"
+
+# CPU model load can take many minutes, especially if it has to download the model; allow up to ~60 min before failing startup
+probes:
+  startup:
+    initialDelaySeconds: 300
+    periodSeconds: 15
+    failureThreshold: 120
+
+env_vars:
+  AIM_ALLOW_UNOPTIMIZED: "true"
+  HF_TOKEN:
+    name: hf-token
+    key: hf-token

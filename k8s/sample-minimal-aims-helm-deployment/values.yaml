@@ -26,6 +26,10 @@ aim:
   metric: "latency"
   logLevelRoot: "INFO"
   logLevel: "INFO"
+  # profileId: selects a specific pre-defined inference configuration profile (e.g. precision, parallelism,
+  # batching settings) bundled in the AIM image. When empty, AIM auto-selects the best profile for the
+  # detected hardware. Example: "vllm-mi350p-mxfp4-tp1-throughput"
+  profile_id: ""
 
 # Additional environment variables
 env_vars: {}

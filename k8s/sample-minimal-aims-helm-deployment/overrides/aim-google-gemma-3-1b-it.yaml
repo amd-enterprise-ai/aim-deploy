@@ -1,0 +1,13 @@
+# Copyright © Advanced Micro Devices, Inc., or its affiliates.
+#
+# SPDX-License-Identifier: MIT
+
+image: amdenterpriseai/aim-google-gemma-3-1b-it:0.12.0
+model: google/gemma-3-1b-it
+gpus: 1
+memory: "16Gi"
+
+env_vars:
+  HF_TOKEN:
+    key: hf-token
+    name: hf-token

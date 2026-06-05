@@ -178,13 +178,45 @@ Expected output:
 }
 ```
 
+## EPYC CPU-only deployment (standalone LLM)
+
+Use the override `overrides/aim-epyc-cpu-llama-3-1-8b-instruct.yaml` to run an AIM on **CPU only** (no AMD GPU, no device plugin required for this path). It sets `gpus: 0`, large memory/CPU, `AIM_PROFILE_ID` for EPYC, a rollout strategy that avoids two huge CPU pods at once, and a long startup probe so the model can load before `/v1/models` responds.
+
+
+```bash
+# Only if hf-token is not already in llm-chat:
+kubectl create secret generic hf-token --from-literal=hf-token=YOUR_TOKEN -n YOUR_K8S_NAMESPACE
+
+# in the k8s/sample-minimal-aims-helm-deployment/overrides folder
+
+helm template aim-epyc-cpu-llama-3-1-8b . \
+  -f ./overrides/aim-epyc-meta-llama-llama-3-1-8b-instruct.yaml \
+  | kubectl apply -n YOUR_K8S_NAMESPACE -f -
+```
+
+If you previously deployed with release name `aim-epyc-cpu-llama-3-2-1b`, delete the old Service and Deployment (or `kubectl delete -f -` from the old manifest) before applying with the new name, or you will have two stacks.
+
+**Device plugin:** Step 2 (AMD device plugin) is **not** required for CPU-only AIMs.
+
+### Wiring an application, such as llm-chat to this AIM (if that is in the same namespace)
+
+With both in **`YOUR_K8S_NAMESPACE`**, use the **short** service name (no FQDN required):
+
+| Service name (default release `aim-epyc-cpu-llama-3-1-8b`) | `llm.existingService` example |
+|-------------------------------------------------------------|-------------------------------|
+| `aim-epyc-cpu-llama-3-1-8b-minimal-aim-app` | `aim-epyc-cpu-llama-3-1-8b-minimal-aim-app:8000` |
+
+Confirm the exact name: `kubectl get svc -n YOUR_K8S_NAMESPACE`.
+
+**Other namespaces:** You can deploy the standalone AIM elsewhere later; then use `http://SERVICE_NAME.YOUR_K8S_NAMESPACE.svc.cluster.local:8000` from llm-chat or other apps.
+
 ## Removing the deployment
 
 To remove the deployment and service, run:
 
 ```bash
 helm template aim-meta-llama-3-1-8b . \                                            
-  -f ./overrides/aim-meta-llama-llama-3-1-8b-instruct.yaml \
+  -f ./overrides/aim-epyc-cpu-llama-3-1-8b-instruct.yaml \
   | kubectl delete -n YOUR_K8S_NAMESPACE -f -
 ```
 
