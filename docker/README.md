@@ -18,7 +18,7 @@ docker run \
   -e HF_TOKEN=<YOUR_HUGGINGFACE_TOKEN> \
   --device=/dev/kfd --device=/dev/dri \
   -p 8000:8000 \
-  amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.11.0
+  amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.11.1
 ```
 
 Where <YOUR_HUGGINGFACE_TOKEN> is your Hugging Face access token (required for gated models)
@@ -36,7 +36,7 @@ docker run \
   -e HF_TOKEN=<YOUR_HUGGINGFACE_TOKEN> \
   --device=/dev/kfd --device=/dev/dri \
   -p 8080:8080 \
-  amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.11.0
+  amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.11.1
 ```
 
 ## 2. Model caching for production
@@ -61,7 +61,7 @@ docker run --rm \
   -e HF_TOKEN=<YOUR_HUGGINGFACE_TOKEN> \
   -v /path/to/model-cache:/workspace/model-cache \
   --device=/dev/kfd --device=/dev/dri \
-  amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.11.0 \
+  amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.11.1 \
   download-to-cache
 
 # Downloading a model using base image and skipping GPU detection and profile selection:
@@ -80,7 +80,7 @@ docker run \
   -v /path/to/model-cache:/workspace/model-cache \
   --device=/dev/kfd --device=/dev/dri \
   -p 8000:8000 \
-  amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.11.0
+  amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.11.1
 ```
 
 ## 3. Testing your deployment
@@ -158,7 +158,7 @@ docker run \
   -e AIM_METRIC=throughput \
   --device=/dev/kfd --device=/dev/dri \
   -p 8000:8000 \
-  amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.11.0
+  amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.11.1
 ```
 
 ## 5. Monitoring and troubleshooting
@@ -169,7 +169,7 @@ A general help command is available as follows:
 
 ```bash
 docker run \
-  amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.11.0 \
+  amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.11.1 \
   --help
 ```
 
@@ -177,7 +177,7 @@ A help command for specific subcommands is also available:
 
 ```bash
 docker run \
-  amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.11.0 \
+  amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.11.1 \
   <subcommand> --help
 ```
 
@@ -189,7 +189,7 @@ docker run \
   -e HF_TOKEN=<YOUR_HUGGINGFACE_TOKEN> \
   --device=/dev/kfd --device=/dev/dri \
   -p 8000:8000 \
-  amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.11.0
+  amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.11.1
 ```
 
 ### 5.3 Checking profile selection results
@@ -202,7 +202,7 @@ docker run \
   -e AIM_PRECISION=fp16 \
   -e AIM_GPU_MODEL=MI300X \
   -e HF_TOKEN=<YOUR_HUGGINGFACE_TOKEN> \
-  amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.11.0 \
+  amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.11.1 \
   dry-run
 ```
 
@@ -210,7 +210,7 @@ docker run \
 
 ```bash
 docker run \
-  amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.11.0 \
+  amdenterpriseai/aim-meta-llama-llama-3-1-8b-instruct:0.11.1 \
   list-profiles
 ```
 

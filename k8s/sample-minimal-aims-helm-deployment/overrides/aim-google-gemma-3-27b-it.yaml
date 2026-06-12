@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 
-image: amdenterpriseai/aim-google-gemma-3-27b-it:0.11.0
+image: amdenterpriseai/aim-google-gemma-3-27b-it:0.11.1
 model: google/gemma-3-27b-it
 gpus: 1
 

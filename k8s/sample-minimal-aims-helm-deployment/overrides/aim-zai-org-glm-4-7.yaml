@@ -5,8 +5,3 @@
 image: amdenterpriseai/aim-zai-org-glm-4-7:0.12.0
 model: zai-org/GLM-4.7
 gpus: 2
-
-env_vars:
-  HF_TOKEN:
-    key: hf-token
-    name: hf-token
